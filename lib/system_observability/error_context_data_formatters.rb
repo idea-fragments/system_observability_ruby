@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SystemObservability::ErrorContextDataFormatters
   @object_data_formatters = {}
 

@@ -6,10 +6,6 @@ require "datadog/statsd"
 require "newrelic_rpm"
 
 module SystemObservability
-  class << self
-    attr_accessor :configuration
-  end
-
   def self.configuration
     @configuration ||= SystemObservability::Configuration.new
   end

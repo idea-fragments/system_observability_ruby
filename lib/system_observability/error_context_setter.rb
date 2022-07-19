@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SystemObservability::ErrorContextSetter
   TYPES_WITHOUT_FORMATTERS = Set.new([
     Array.name,

@@ -43,7 +43,7 @@ RSpec.describe SystemObservability::ErrorContextSetter do
       expect(team_formatter).to receive(:call).with(team).and_call_original
       expect(user_formatter).to receive(:call).with(user).and_call_original
 
-      described_class.call(**metadata,team: team, user: user)
+      described_class.call(**metadata, team: team, user: user)
       expect_context_added.call({
         **metadata,
         team: team.to_h.slice(:id, :name),
