@@ -4,6 +4,7 @@ require "bundler/setup"
 require "bugsnag"
 require "datadog/statsd"
 require "newrelic_rpm"
+require "sidekiq"
 
 module SystemObservability
   def self.configuration

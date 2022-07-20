@@ -14,10 +14,24 @@ class SystemObservability::Configuration
   def config_datadog(
     enabled_envs: [],
     statsd_host: ENV.fetch("DATADOG_HOST"),
-    statsd_port: ENV.fetch("DATADOG_PORT")
+    statsd_port: ENV.fetch("DATADOG_PORT"),
+    track_sidekiq_job_timings: false
   )
-    return SystemObservability::Stats::NullInstance.new if enabled_envs.exclude?(env)
+    SystemObservability::Stats.instance =
+      enabled_envs.include?(env) ?
+        SystemObservability::Stats.new(Datadog::Statsd.new(statsd_host, statsd_port)) :
+        SystemObservability::Stats::NullInstance.new
 
-    SystemObservability::Stats.new(Datadog::Statsd.new(statsd_host, statsd_port))
+    config_sidekiq_stats_middleware if track_sidekiq_job_timings
+  end
+
+  private
+
+  def config_sidekiq_stats_middleware
+    Sidekiq.configure_server do |config|
+      config.server_middleware do |chain|
+        chain.add SystemObservability::SidekiqStatsMiddleware
+      end
+    end
   end
 end

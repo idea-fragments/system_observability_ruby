@@ -3,6 +3,7 @@
 require "bundler/setup"
 require "faker"
 require "idea_fragments_system_observability"
+require "timecop"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -28,6 +29,13 @@ RSpec.configure do |config|
       api_key: "00000000000000000000000000000000",
       app_version: "1.0.0",
       enabled_envs: []
+    )
+
+    c.config_datadog(
+      enabled_envs: [],
+      statsd_host: "dd host",
+      statsd_port: "dd port",
+      track_sidekiq_job_timings: false
     )
   end
 end

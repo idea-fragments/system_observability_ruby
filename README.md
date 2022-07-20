@@ -112,6 +112,34 @@ SystemObservability.configure do |c|
 end
 ```
 
+If sidekiq is being used, the stats middleware for sidekiq can be enabled.
+```ruby
+# system_observability.rb
+SystemObservability.configure do |c|
+  # ....
+  c.config_datadog(
+    # ...
+    track_sidekiq_job_timings: true,
+  )
+  # ....
+end
+```
+This middleware will track the following metrics when a job is enqueued:
+
+```ruby
+tags = { job: job_name }
+SystemObservability::Stats.distribution(
+  "sidekiq.jobs.latency.distribution", 
+  latency, # time between when the job is enqueued and when it is picked up to be processed
+  tags: tags
+)
+SystemObservability::Stats.time(
+  "sidekiq.jobs.time", 
+  tags: tags, 
+  &block
+)
+```
+
 ## Usage
 ### Datadog
 Function calls are similar to those used in the included datadog gem.

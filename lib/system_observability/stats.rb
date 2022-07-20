@@ -3,12 +3,20 @@
 class SystemObservability::Stats
   class << self
     def instance=(instance)
-      raise "Instance already defined" if self.instance.present?
+      raise "Instance already defined" if defined? self.instance
       @instance = instance
     end
 
     def instance_class
       instance.class.name
+    end
+
+    def method_missing(*args, &block)
+      instance.public_send(*args, &block)
+    end
+
+    def respond_to_missing?(*args)
+      instance.respond_to_missing?(*args)
     end
 
     private
