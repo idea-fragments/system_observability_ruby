@@ -2,7 +2,7 @@
 
 require "bundler/setup"
 require "faker"
-require "system_observability"
+require "idea_fragments_system_observability"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -27,7 +27,7 @@ RSpec.configure do |config|
     c.config_bugsnag(
       api_key: "00000000000000000000000000000000",
       app_version: "1.0.0",
-      enabled_release_stages: []
+      enabled_envs: []
     )
   end
 end
