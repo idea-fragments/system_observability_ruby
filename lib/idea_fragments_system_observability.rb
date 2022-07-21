@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+require "active_support"
 require "bugsnag"
 require "datadog/statsd"
 require "newrelic_rpm"
