@@ -5,6 +5,7 @@ class SystemObservability::SidekiqStatsMiddleware
     job_name = worker.class.name
     latency = calculate_latency(msg)
     tags = { job: job_name }
+    Rails.logger.info "running SystemObservability::SidekiqStatsMiddleware"
     SystemObservability::Stats.distribution("sidekiq.jobs.latency.distribution", latency, tags: tags)
     SystemObservability::Stats.time("sidekiq.jobs.time", tags: tags, &block)
   end

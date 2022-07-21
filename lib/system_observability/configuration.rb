@@ -33,8 +33,8 @@ class SystemObservability::Configuration
       Rails.logger.info "Sidekiq server started"
       config.server_middleware do |chain|
         Rails.logger.info "GEM"
-        Rails.logger.info chain
         chain.add SystemObservability::SidekiqStatsMiddleware
+        Rails.logger.info chain.entries
       end
     end
   end
