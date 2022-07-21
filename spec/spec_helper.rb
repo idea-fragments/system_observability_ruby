@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+# require "action_controller"
 require "faker"
 require "idea_fragments_system_observability"
 require "timecop"
