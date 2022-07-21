@@ -55,39 +55,6 @@ SystemObservability.configure do |c|
   # ....
 end
 ```
-To add extra context to Bugsnag when reporting an error, use the SystemObservability::ErrorContextSetter class. This metadata will be added to the Bugsnag error report behind the scenes.
-
-```ruby
-SystemObservability::ErrorContextSetter.call(extra: "context")
-```
-
-To add context for custom objects, such as models, be sure to set up a data formatter for the object type. This only needs to be done once, so you can add the formatter to the `config/initializers` file.
-
-```ruby
-# system_observability.rb
-SystemObservability::ErrorContextDataFormatters.add(
-  User, 
-  ->(user) { { id: user.id, name: user.name } }
-)
-
-# if using rails...In the same file, add the following:
-Rails.configuration.after_initialize do
-  SystemObservability::ErrorContextDataFormatters.add(
-    User,
-    ->(user) { { id: user.id, name: user.name } }
-  )
-end
-```
-
-Now custom objects can be added to the error context.
-```ruby
-SystemObservability::ErrorContextSetter.call(user: User.first, team: Team.first)
-```
-
-Most built in types do not need a formatter. A list of objects types that do not need a formatter can be found here:
-```ruby
-SystemObservability::ErrorContextSetter::TYPES_WITHOUT_FORMATTERS
-```
 
 ### New Relic
 Generate a new relic config file in the `config` directory by running:
@@ -141,6 +108,61 @@ SystemObservability::Stats.time(
 ```
 
 ## Usage
+
+### Bugsnag
+
+#### Async Jobs
+To add extra context to Bugsnag when reporting an error, use the SystemObservability::ErrorContextSetter class. This metadata will be added to the Bugsnag error report behind the scenes.
+
+```ruby
+# app/jobs/some_job.rb
+
+class SomeJob < ApplicationJob
+  def perform
+    SystemObservability::ErrorContextSetter.call(extra: "context")
+    # ...
+  end
+end
+```
+
+To add context for custom objects, such as models, be sure to set up a data formatter for the object type. This only needs to be done once, so you can add the formatter to the `config/initializers` file.
+
+```ruby
+# system_observability.rb
+SystemObservability::ErrorContextDataFormatters.add(
+  User, 
+  ->(user) { { id: user.id, name: user.name } }
+)
+
+# if using rails...In the same file, add the following:
+Rails.configuration.after_initialize do
+  SystemObservability::ErrorContextDataFormatters.add(
+    User,
+    ->(user) { { id: user.id, name: user.name } }
+  )
+end
+```
+
+Now custom objects can be added to the error context.
+```ruby
+SystemObservability::ErrorContextSetter.call(user: User.first, team: Team.first)
+```
+
+Most built in types do not need a formatter. A list of objects types that do not need a formatter can be found here:
+```ruby
+SystemObservability::ErrorContextSetter::TYPES_WITHOUT_FORMATTERS
+```
+
+#### Web Requests
+Add user info to bugsnag when a request error occurs. This helper module will expect that `current_user` is set on the controller and will send the user info to Bugsnag. The data that's reported for the current user will rely on the formatter that's set up for the user object.
+
+```ruby
+class ApplicationController < ActionController::API
+  # ...
+  include SystemObservability::Rails::WebErrorReporter
+end
+```
+
 ### Datadog
 Function calls are similar to those used in the included datadog gem.
 However, tags are passed in as a hash, rather than an array.
@@ -155,6 +177,22 @@ SystemObservability::Stats.increment(
 The Stats instance will format the tags into the correct format for datadog, sending:
 ```ruby
 ["team_id:434", "type:something"]
+```
+
+#### Web Requests
+Track web request timing automatically with the included helper module.
+
+```ruby
+class ApplicationController < ActionController::API
+  # ...
+  include SystemObservability::Rails::WebResponseTimer
+end
+```
+
+This will send the following metrics to Datadog:
+```
+metric_name: "web.response.time"
+tags: ["controller:some_controller", "http_method:get"]
 ```
 
 ## Development

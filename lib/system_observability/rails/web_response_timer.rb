@@ -8,7 +8,7 @@ module SystemObservability::Rails::WebResponseTimer
   def time_request(&block)
     SystemObservability::Stats.time(
       "web.response.time",
-      tags: { controller: self.class.name, http_method: request.request_method },
+      tags: { controller: self.class.name, : request.request_method },
       &block
     )
   end
