@@ -96,7 +96,7 @@ This middleware will track the following metrics when a job is enqueued:
 ```ruby
 tags = { job: job_name }
 SystemObservability::Stats.distribution(
-  "sidekiq.jobs.latency.distribution", 
+  "sidekiq.jobs.latency", 
   latency, # time between when the job is enqueued and when it is picked up to be processed
   tags: tags
 )
@@ -106,6 +106,8 @@ SystemObservability::Stats.time(
   &block
 )
 ```
+
+NOTE that distribution metrics will have "dist" prepended to the metric name.
 
 ## Usage
 
