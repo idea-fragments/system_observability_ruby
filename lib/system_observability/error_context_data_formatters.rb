@@ -3,7 +3,7 @@
 class SystemObservability::ErrorContextDataFormatters
   @object_data_formatters = {}
 
-  def self.add(klass, formatter = Proc.new {})
+  def self.add(klass, formatter = proc {})
     @object_data_formatters[klass.name] = formatter
   end
 
