@@ -12,14 +12,15 @@ class SystemObservability::Stats
     end
 
     def method_missing(*args, &block)
-      instance.public_send(*args, &block)
-    end
-
-    def respond_to_missing?(*args)
-      instance.respond_to_missing?(*args)
+      kwargs = args.last.is_a?(Hash) ? args.pop : {}
+      instance.public_send(*args, **kwargs, &block)
     end
 
     private
+
+    def respond_to_missing?(*args)
+      instance.respond_to?(*args)
+    end
 
     attr_reader :instance
   end
