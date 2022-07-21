@@ -13,6 +13,3 @@ module SystemObservability::Rails::WebResponseTimer
     )
   end
 end
-
-# SystemObservability.configure { |c| c.env="development"; c.config_datadog(enabled_envs: ["production", "development"], track_sidekiq_job_timings: true) }
-# SystemObservability::Stats.time("web.response.time", tags: {}) { }
