@@ -25,16 +25,19 @@ class SystemObservability::Configuration
     config_sidekiq_stats_middleware if track_sidekiq_job_timings
   end
 
+  def enable_query_log_tags(app_module)
+    app_module::Application.configure do |app|
+      app.config.active_record.query_log_tags = [:application, :controller, :action, :job]
+      app.config.active_record.query_log_tags_enabled = true
+    end
+  end
+
   private
 
   def config_sidekiq_stats_middleware
     Sidekiq.configure_server do |config|
-      Rails.logger.info "GEM"
-      Rails.logger.info "Sidekiq server started"
       config.server_middleware do |chain|
-        Rails.logger.info "GEM"
         chain.add SystemObservability::SidekiqStatsMiddleware
-        Rails.logger.info chain.entries
       end
     end
   end

@@ -66,10 +66,22 @@ class SystemObservability::Stats
   end
 
   class NullInstance
-    def method_missing(_name, *_args)
-      yield if block_given?
-    end
+    def count(stat, count, tags: {}); end
 
-    def respond_to_missing?(_name, *_args); end
+    def increment(stat, tags: {}); end
+
+    def gauge(stat, value, sample_rate: 1.0, tags: {}); end
+
+    def histogram(stat, value, tags: {}); end
+
+    def distribution(stat, value, tags: {}); end
+
+    # rubocop:disable Lint/UnusedMethodArgument
+    def time(_stat, tags: {}, &block)
+      block.call
+    end
+    # rubocop:enable Lint/UnusedMethodArgument
+
+    def timing(stat, ms, tags: {}); end
   end
 end
