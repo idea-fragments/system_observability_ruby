@@ -40,8 +40,3 @@ RSpec.configure do |config|
     )
   end
 end
-# not overly restrictive
-# section 12
-# 1 year wont silicit their contractors or consultants
-#
-#
