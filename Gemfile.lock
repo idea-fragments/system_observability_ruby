@@ -1,13 +1,13 @@
 PATH
   remote: .
   specs:
-    idea_fragments_system_observability (0.1.0)
+    idea_fragments_system_observability (0.1.1)
       activesupport (~> 7.0)
       bugsnag (~> 6.24)
       dogstatsd-ruby (~> 5.5)
       newrelic_rpm (~> 8.9)
       rake (~> 13.0)
-      sidekiq (~> 6.5)
+      sidekiq (< 8)
 
 GEM
   remote: https://rubygems.org/
@@ -34,10 +34,11 @@ GEM
     parallel (1.22.1)
     parser (3.2.0.0)
       ast (~> 2.4.1)
-    rack (2.2.5)
+    rack (3.0.3)
     rainbow (3.1.1)
     rake (13.0.6)
-    redis (4.8.0)
+    redis-client (0.11.2)
+      connection_pool
     regexp_parser (2.6.1)
     rexml (3.2.5)
     rspec (3.12.0)
@@ -68,10 +69,11 @@ GEM
     rubocop-rspec (2.16.0)
       rubocop (~> 1.33)
     ruby-progressbar (1.11.0)
-    sidekiq (6.5.8)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
+    sidekiq (7.0.2)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     timecop (0.9.6)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
@@ -83,10 +85,10 @@ PLATFORMS
 DEPENDENCIES
   faker
   idea_fragments_system_observability!
-  rspec (~> 3.0)
-  rubocop (~> 1.21)
-  rubocop-rspec (~> 2.10)
-  timecop (~> 0.9)
+  rspec
+  rubocop
+  rubocop-rspec
+  timecop
 
 BUNDLED WITH
    2.3.7
