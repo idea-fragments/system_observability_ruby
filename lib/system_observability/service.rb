@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class Service
+class SystemObservability::Service
   private_class_method :new
 end

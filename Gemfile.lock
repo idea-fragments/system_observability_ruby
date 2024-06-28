@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    idea_fragments_system_observability (0.1.1)
+    idea_fragments_system_observability (0.1.2)
       activesupport (~> 7.0)
       bugsnag (~> 6.24)
       dogstatsd-ruby (~> 5.5)
