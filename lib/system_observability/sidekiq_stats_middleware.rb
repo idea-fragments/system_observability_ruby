@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SystemObservability::SidekiqStatsMiddleware
+  include Sidekiq::ServerMiddleware
+
   def call(worker, msg, _queue, &block)
     job_name = worker.class.name
     latency = calculate_latency(msg)

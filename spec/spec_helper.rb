@@ -5,6 +5,7 @@ require "bundler/setup"
 require "faker"
 require "idea_fragments_system_observability"
 require "timecop"
+require "ostruct"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

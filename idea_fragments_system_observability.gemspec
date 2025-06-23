@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = ""
   spec.homepage = "https://github.com/idea-fragments/system_observability_ruby"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.1.2"
+  spec.required_ruby_version = ">= 3.2.0"
 
   spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
@@ -33,12 +33,12 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
-  spec.add_dependency "activesupport", "~> 7.0"
-  spec.add_dependency "bugsnag", "~> 6.24"
-  spec.add_dependency "dogstatsd-ruby", "~> 5.5"
-  spec.add_dependency "newrelic_rpm", "~> 8.9"
+  spec.add_dependency "activesupport", "~> 8.0.2"
+  spec.add_dependency "bugsnag", "~> 6.27"
+  spec.add_dependency "dogstatsd-ruby", "~> 5.6"
+  spec.add_dependency "newrelic_rpm", "~> 9.19"
   spec.add_dependency "rake", "~> 13.0"
-  spec.add_dependency "sidekiq", "<8"
+  spec.add_dependency "sidekiq", ">=7", "<8"
 
   spec.add_development_dependency "faker"
   spec.add_development_dependency "rspec"
