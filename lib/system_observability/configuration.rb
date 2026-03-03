@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class SystemObservability::Configuration
-  attr_accessor :env
+  attr_accessor :env, :error_reporter_adapter
+
+  def initialize
+    @error_reporter_adapter = SystemObservability::ErrorReporter::BugsnagAdapter
+  end
 
   def config_bugsnag(api_key:, app_version:, enabled_envs: [])
     Bugsnag.configure do |config|
@@ -23,6 +27,17 @@ class SystemObservability::Configuration
         SystemObservability::Stats::NullInstance.new
 
     config_sidekiq_stats_middleware if track_sidekiq_job_timings
+  end
+
+  def config_error_reporter(provider:)
+    self.error_reporter_adapter = case provider
+    when :bugsnag
+      SystemObservability::ErrorReporter::BugsnagAdapter
+    when :sentry
+      SystemObservability::ErrorReporter::SentryAdapter
+    else
+      raise ArgumentError, "Unknown error reporter provider: #{provider}"
+    end
   end
 
   def enable_query_log_tags(app_module)

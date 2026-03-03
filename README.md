@@ -41,6 +41,18 @@ SystemObservability.configure do |c|
 end
 ```
 
+### Error Reporting (Bugsnag or Sentry)
+Configure which error reporting provider to use. Defaults to Bugsnag if not specified.
+```ruby
+# system_observability.rb
+SystemObservability.configure do |c|
+  # ....
+  # Optional: Explicitly set error reporter (defaults to :bugsnag)
+  c.config_error_reporter(provider: :bugsnag) # or :sentry
+  # ....
+end
+```
+
 ### Bugsnag
 Pass in your bugsnag config value and the envs you want to report to Bugsnag for.
 ```ruby
@@ -53,6 +65,32 @@ SystemObservability.configure do |c|
     enabled_envs: [] # "production", "development", "staging"
   )
   # ....
+end
+```
+
+### Sentry (Optional)
+To use Sentry instead of Bugsnag, install the Sentry gem and configure it:
+
+```ruby
+# Gemfile
+gem 'sentry-ruby'
+gem 'sentry-rails' # if using Rails
+```
+
+```ruby
+# config/initializers/sentry.rb
+Sentry.init do |config|
+  config.dsn = 'your-sentry-dsn'
+  config.breadcrumbs_logger = [:active_support_logger, :http_logger]
+  config.traces_sample_rate = 0.5
+end
+```
+
+Then configure the gem to use Sentry:
+```ruby
+# system_observability.rb
+SystemObservability.configure do |c|
+  c.config_error_reporter(provider: :sentry)
 end
 ```
 
@@ -110,6 +148,61 @@ SystemObservability::Stats.time(
 NOTE that distribution metrics will have "dist" prepended to the metric name.
 
 ## Usage
+
+### Error Reporter
+Report errors to your configured error reporting service (Bugsnag or Sentry) using a unified interface.
+
+#### Basic Error Reporting
+```ruby
+begin
+  # some code that might raise an error
+rescue => error
+  SystemObservability::ErrorReporter.call(error:)
+end
+```
+
+#### Error Reporting with Metadata
+Add custom metadata to help debug the error:
+```ruby
+begin
+  process_payment(order)
+rescue => error
+  SystemObservability::ErrorReporter.call(
+    error:,
+    metadata: {
+      amount: order.total,
+      order_id: order.id,
+      user: current_user,
+    }
+  )
+end
+```
+
+#### Error Reporting with Severity
+Specify the severity level (valid values: `:debug`, `:info`, `:warn`, `:warning`, `:error`, `:fatal`):
+```ruby
+SystemObservability::ErrorReporter.call(
+  error:,
+  metadata: { context: "background job" },
+  severity: :warning
+)
+```
+
+#### Error Reporting with Context and User
+Provide additional context about where the error occurred and which user was affected:
+```ruby
+SystemObservability::ErrorReporter.call(
+  context: "PaymentProcessing#charge_card",
+  error:,
+  metadata: {
+    amount: 99.99,
+    payment_method: "credit_card",
+  },
+  user: current_user
+)
+```
+
+**Note:** Custom objects in `metadata` and `user` parameters will use the formatters registered with `SystemObservability::ErrorContextDataFormatters`. See the Bugsnag section below for details on setting up formatters.
 
 ### Bugsnag
 
