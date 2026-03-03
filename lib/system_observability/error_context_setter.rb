@@ -13,32 +13,29 @@ class SystemObservability::ErrorContextSetter
   ])
 
   def self.call(**metadata)
-    new(metadata).call
+    new(metadata:).call
   end
 
   def call
-    Bugsnag.add_on_error(method(:add_report_context))
+    adapter_class.call(metadata:)
   end
 
   private
 
-  def add_report_context(report)
-    report.add_metadata(
-      :context,
-      metadata.each_with_object({}, &method(:format))
-    )
-  end
-
-  def format((name, object), context)
-    return context[name] = object if TYPES_WITHOUT_FORMATTERS.include?(object.class.name)
-
-    formatter = SystemObservability::ErrorContextDataFormatters.get(object.class)
-    context[name] = formatter.call(object)
-  end
-
   attr_accessor :metadata
 
-  def initialize(metadata)
+  def adapter_class
+    case SystemObservability.configuration.error_reporter_adapter.name
+    when "SystemObservability::ErrorReporter::BugsnagAdapter"
+      SystemObservability::ErrorContextSetter::BugsnagAdapter
+    when "SystemObservability::ErrorReporter::SentryAdapter"
+      SystemObservability::ErrorContextSetter::SentryAdapter
+    else
+      raise ArgumentError, "Unknown error reporter adapter: #{SystemObservability.configuration.error_reporter_adapter}"
+    end
+  end
+
+  def initialize(metadata:)
     self.metadata = metadata
   end
 end

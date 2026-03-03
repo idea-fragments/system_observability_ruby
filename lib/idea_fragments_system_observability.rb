@@ -21,4 +21,6 @@ module SystemObservability
   end
 end
 
+require_relative "system_observability/service"
+
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].sort.each { |f| require f }

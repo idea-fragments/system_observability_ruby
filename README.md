@@ -202,12 +202,10 @@ SystemObservability::ErrorReporter.call(
 )
 ```
 
-**Note:** Custom objects in `metadata` and `user` parameters will use the formatters registered with `SystemObservability::ErrorContextDataFormatters`. See the Bugsnag section below for details on setting up formatters.
-
-### Bugsnag
+**Note:** Custom objects in `metadata` and `user` parameters will use the formatters registered with `SystemObservability::ErrorContextDataFormatters`. See below for details on setting up formatters.
 
 #### Async Jobs
-To add extra context to Bugsnag when reporting an error, use the SystemObservability::ErrorContextSetter class. This metadata will be added to the Bugsnag error report behind the scenes.
+To add extra context when reporting an error in background jobs, use the SystemObservability::ErrorContextSetter class. This metadata will be added to the error report automatically based on your configured provider (Bugsnag or Sentry).
 
 ```ruby
 # app/jobs/some_job.rb
@@ -249,7 +247,7 @@ SystemObservability::ErrorContextSetter::TYPES_WITHOUT_FORMATTERS
 ```
 
 #### Web Requests
-Add user info to bugsnag when a request error occurs. This helper module will expect that `current_user` is set on the controller and will send the user info to Bugsnag. The data that's reported for the current user will rely on the formatter that's set up for the user object.
+Add user info to error reports when a request error occurs. This helper module will expect that `current_user` is set on the controller and will send the user info to your configured error reporter (Bugsnag or Sentry). The data that's reported for the current user will rely on the formatter that's set up for the user object.
 
 ```ruby
 class ApplicationController < ActionController::API

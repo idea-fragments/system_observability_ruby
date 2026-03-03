@@ -3,10 +3,14 @@
 module SystemObservability::Rails::WebErrorReporter
   extend ActiveSupport::Concern
 
-  included { before_bugsnag_notify :add_user_info_to_bugsnag }
-
-  def add_user_info_to_bugsnag(report)
-    formatter = SystemObservability::ErrorContextDataFormatters.get(current_user.class)
-    report.user = formatter.call(current_user)
+  included do
+    case SystemObservability.configuration.error_reporter_adapter.name
+    when "SystemObservability::ErrorReporter::BugsnagAdapter"
+      include SystemObservability::Rails::WebErrorReporter::BugsnagAdapter
+    when "SystemObservability::ErrorReporter::SentryAdapter"
+      include SystemObservability::Rails::WebErrorReporter::SentryAdapter
+    else
+      raise ArgumentError, "Unknown error reporter adapter: #{SystemObservability.configuration.error_reporter_adapter}"
+    end
   end
 end
