@@ -24,7 +24,7 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before { Bugsnag.add_on_error(->(report) { report.ignore! }) }
+  config.before { Bugsnag.add_on_error(lambda(&:ignore!)) }
 
   SystemObservability.configure do |c|
     c.config_bugsnag(
