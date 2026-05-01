@@ -39,12 +39,12 @@ class SystemObservability::Configuration
 
   def config_error_reporter(provider:)
     self.error_reporter_adapter = case provider
-    when :bugsnag
-      SystemObservability::ErrorReporter::BugsnagAdapter
-    when :sentry
-      SystemObservability::ErrorReporter::SentryAdapter
-    else
-      raise ArgumentError, "Unknown error reporter provider: #{provider}"
+      when :bugsnag
+        SystemObservability::ErrorReporter::BugsnagAdapter
+      when :sentry
+        SystemObservability::ErrorReporter::SentryAdapter
+      else
+        raise ArgumentError, "Unknown error reporter provider: #{provider}"
     end
   end
 

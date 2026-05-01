@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SystemObservability::ErrorReporter < SystemObservability::Service
-  def self.call(context: nil, error:, metadata: {}, severity: nil, user: nil)
+  def self.call(error:, context: nil, metadata: {}, severity: nil, user: nil)
     new(context:, error:, metadata:, severity:, user:).call
   end
 
