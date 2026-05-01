@@ -13,6 +13,14 @@ class SystemObservability::Configuration
       config.app_version = app_version
       config.enabled_release_stages = enabled_envs
     end
+
+    Bugsnag.add_on_error(method(:add_error_context_from_thread))
+
+    Sidekiq.configure_server do |config|
+      config.server_middleware do |chain|
+        chain.add SystemObservability::SidekiqErrorContextMiddleware
+      end
+    end
   end
 
   def config_datadog(
@@ -48,6 +56,13 @@ class SystemObservability::Configuration
   end
 
   private
+
+  def add_error_context_from_thread(report)
+    metadata = Thread.current[SystemObservability::ErrorContextSetter::BugsnagAdapter::THREAD_KEY]
+    return unless metadata
+
+    report.add_metadata(:context, metadata)
+  end
 
   def config_sidekiq_stats_middleware
     Sidekiq.configure_server do |config|
