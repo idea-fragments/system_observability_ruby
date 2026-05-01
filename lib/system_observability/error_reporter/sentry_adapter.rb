@@ -15,17 +15,19 @@ class SystemObservability::ErrorReporter::SentryAdapter
   end
 
   def call
-    Sentry.capture_exception(error) do |scope|
-      scope.set_context(:additional, { context: }) if context
-      scope.set_context(:custom, format_metadata(metadata)) if metadata.any?
-      scope.set_level(map_severity(severity)) if severity
-      scope.set_user(format_user(user)) if user
-    end
+    Sentry.capture_exception(error) { |scope| configure_scope(scope) }
   end
 
   private
 
   attr_accessor :context, :error, :metadata, :severity, :user
+
+  def configure_scope(scope)
+    scope.set_context(:additional, { context: }) if context
+    scope.set_context(:custom, format_metadata(metadata)) if metadata.any?
+    scope.set_level(map_severity(severity)) if severity
+    scope.set_user(format_user(user)) if user
+  end
 
   def format_metadata(metadata)
     metadata.each_with_object({}) do |(name, object), hash|
